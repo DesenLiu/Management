@@ -8,7 +8,7 @@ import './plugins/element.js'
 import axios from 'axios'
 
 
-axios.defaults.baseURL="https://www.liulongbin.top:8888/api/private/v1/"
+axios.defaults.baseURL="http://ttapi.research.itcast.cn/mp/v1_0"
 // axios.interceptors.request.use(config => {
 //     NProgress.start()
 //     config.headers.Authorization = window.sessionStorage.getItem('token')
