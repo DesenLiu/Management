@@ -9,6 +9,16 @@ export const routes = [{
 				component: r => require(['../components/users/Users.vue'], r),
 			},
 			{
+				path: '/rights',
+				name: 'Rights',
+				component: r => require(['../components/power/Rights.vue'],r),
+			},
+			{
+				path: '/roles',
+				name: 'Roles',
+				component: r => require(['../components/power/Roles.vue'],r),
+			},
+			{
 				path: '/comments',
 				name: 'Comments',
 				component: r => require(['../components/comments/Comments.vue'],r),

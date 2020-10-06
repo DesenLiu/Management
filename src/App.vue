@@ -18,4 +18,7 @@
 		list-style: none;
 		margin: 0;
 	}
+	#app{
+		min-width: 1366px;
+	}
 </style>
