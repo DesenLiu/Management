@@ -159,4 +159,4 @@ Vue.use(CascaderPanel);
 
 
 Vue.prototype.$message = Message
-// Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$confirm = MessageBox.confirm

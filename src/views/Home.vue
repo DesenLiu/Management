@@ -5,58 +5,26 @@
 				<img src="../assets/logo.png"></img>
 				<div>Vue商城后台管理系统</div>
 			</div>
-			<el-button type="warning" class="el-header-btn">退出</el-button>
+			<el-button type="warning" class="el-header-btn" @click="removeToken">退出</el-button>
 		</header>
 		<!--  -->
 		<section class="el-container">
 			<aside class="el-aside" :style=" {width:isCollapse ?'64px':'200px' }">
 				<div class="toggle-btn" @click="toggleCollapse">|||</div>
-				<el-menu 
-				router
-				background-color="#333744" 
-				text-color="#fff" 
-				active-text-color="#409EFF" 
-				:collapse="isCollapse"
-				unique-opened 
-				:collapse-transition="false">
-					<el-menu-item index="/homes">
-						<i class="el-icon-document"></i>
-						<span slot="title">首页</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/content">
-						<i class="el-icon-document"></i>
-						<span slot="title">内容管理</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/material">
-						<i class="el-icon-document"></i>
-						<span slot="title">素材管理</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/pubarticles">
-						<i class="el-icon-document"></i>
-						<span slot="title">发布文章</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/comments">
-						<i class="el-icon-document"></i>
-						<span slot="title">评论管理</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/fans">
-						<i class="el-icon-document"></i>
-						<span slot="title">粉丝管理</span>
-					</el-menu-item>
-					
-					<el-menu-item index="/personal">
-						<i class="el-icon-document"></i>
-						<span slot="title">个人设置</span>
-					</el-menu-item>
-
+				<el-menu class="icon_menu" router background-color="#333744" text-color="#fff" active-text-color="#409EFF"
+				 :collapse="isCollapse" :default-active="activePath" unique-opened :collapse-transition="false">
+					<!-- 一级菜单 -->
+					<el-submenu :index="item.id + ''" v-for="(item , idx) in menuList" :key="item.id">
+						<template slot="title">
+							<i :class="['iconfont' ,iconArr[idx]]"></i>
+							<span slot="title">{{item.authName}}</span>
+						</template>
+						<!-- 二级菜单 -->
+						<el-menu-item :index="'/' + v.path" v-for="(v , i) in item.children" :key="i" @click="saveNavState('/' + v.path)">{{v.authName}}</el-menu-item>
+					</el-submenu>
 				</el-menu>
 			</aside>
-			<main class="el-main">
+			<main class="el-main" style="background-color: #E8EEF4;">
 				<router-view></router-view>
 			</main>
 		</section>
@@ -69,25 +37,43 @@
 		data() {
 			return {
 				isCollapse: true,
+				menuList: [],
+				iconArr: ['icon-yonghuguanli', 'icon-sucaiguanli', 'icon-zhifeiji', 'icon-wenzhang', 'icon-tongji'],
+				// 被激活的链接地址
+				activePath:''
 			}
 		},
 		methods: {
+			// 伸缩导航栏
 			toggleCollapse() {
 				this.isCollapse = !this.isCollapse
 			},
+			// 退出登录
+			removeToken() {
+				localStorage.removeItem('token');
+				this.$router.push({
+					name: 'Login'
+				})
+			},
 			async getMenuList() {
-				console.log(this.$axios)
 				let {
-					data
-				} = await this.$axios.get("menus");
-				console.log(data);
+					data: res
+				} = await this.$axios.get('/menus');
+				if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
+				this.menuList = res.data;
+			},
+			// 保存链接的激活状态
+			saveNavState(val){
+				// console.log(val);
+				sessionStorage.setItem('activePath',val);
+				this.activePath = val;
 			}
 		},
 
 		created() {
-			// this.getMenuList();
+			this.getMenuList();
+			this.activePath = sessionStorage.getItem('activePath');
 		},
-		components: {}
 	}
 </script>
 <style lang="less" scoped>

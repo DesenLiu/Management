@@ -1,11 +1,12 @@
 export const routes = [{
 		path: '/home',
 		name: 'Home',
+		// redirect:'/users',
 		component: r => require(['../views/Home.vue'], r),
 		children: [{
-				path: '/homes',
-				name: 'Homes',
-				component: r => require(['../components/homes/homes.vue'], r),
+				path: '/users',
+				name: 'Users',
+				component: r => require(['../components/users/Users.vue'], r),
 			},
 			{
 				path: '/comments',
@@ -44,10 +45,10 @@ export const routes = [{
 		name: 'Login',
 		component: r => require(['../components/Login.vue'], r)
 	},
-	{
-		path: '*',
-		redirect: {
-			name: 'Login'
-		}
-	}
+	// {
+	// 	path: '*',
+	// 	redirect: {
+	// 		name: 'Login'
+	// 	}
+	// }
 ]

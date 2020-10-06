@@ -6,14 +6,36 @@ import './assets/js/runtime.js'
 // 引入element-ui 的注册信息
 import './plugins/element.js'
 import axios from 'axios'
+import './styles/iconStyle.css'
 
 
-axios.defaults.baseURL="http://ttapi.research.itcast.cn/mp/v1_0"
-// axios.interceptors.request.use(config => {
-//     NProgress.start()
-//     config.headers.Authorization = window.sessionStorage.getItem('token')
-//     return config
-// })
+axios.defaults.baseURL="http://rambuild.cn:8888/api/private/v1"
+axios.interceptors.request.use(config => {
+	let user = JSON.parse(localStorage.getItem('user'))
+	if(user){
+		config.headers.Authorization = user.token
+		return config
+	}
+    
+}, error => {
+	return Promise.reject(error)
+}
+)
+
+ router.beforeEach((to , from , next) => {
+	let userToken = JSON.parse(localStorage.getItem('user'));
+	// 非登录页面
+	if(to.path !== "/login"){
+		if(userToken.token){
+			next();
+		}else{
+			// 没有登录 跳转登录页面
+			next('/login')
+		}
+	}else{
+		next();
+	}
+})
 
 // axios.interceptors.response.use(config => {
 //     NProgress.done()
