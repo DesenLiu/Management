@@ -62,11 +62,12 @@
 		methods: {
 			login(formName) {
 				this.isLoding = true;
+				
 				this.$refs[formName].validate(async (valid) => {
+					
 					if (valid) {
-						let {data} = await this.$axios.post('/login', this.loginForm);
-						console.log(data);
-						
+
+						let {data} = await this.$axios.post('login', this.loginForm);
 						if (data.meta.status == 200) {
 							this.$message({
 								showClose: true,

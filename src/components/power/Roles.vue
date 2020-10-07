@@ -272,8 +272,7 @@
 				let idStr = keys.join(',');
 				let {data:res} = await this.$axios.post(`roles/${this.roleId}/rights`,{rids:idStr});
 				if(res.meta.status !== 200){
-					return this.$message.error('分配权限失败');
-					
+					return this.$message.error('分配权限失败');		
 				}
 				 this.$message.success('分配权限成功');
 				 this.getRoleList();

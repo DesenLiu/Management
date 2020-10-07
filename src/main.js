@@ -8,13 +8,15 @@ import './plugins/element.js'
 import axios from 'axios'
 import './styles/iconStyle.css'
 
+import ZkTable from 'vue-table-with-tree-grid'
 
-axios.defaults.baseURL="http://rambuild.cn:8888/api/private/v1"
+
+axios.defaults.baseURL="http://rambuild.cn:8888/api/private/v1/"
 axios.interceptors.request.use(config => {
 	let user = JSON.parse(localStorage.getItem('user'))
 	if(user){
-		config.headers.Authorization = user.token
-		return config
+		config.headers.Authorization = user.token;
+		return config;
 	}
     
 }, error => {
@@ -47,6 +49,8 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
+
+Vue.use(ZkTable)
 
 new Vue({
   router,

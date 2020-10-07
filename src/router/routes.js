@@ -19,6 +19,11 @@ export const routes = [{
 				component: r => require(['../components/power/Roles.vue'],r),
 			},
 			{
+				path: '/categories',
+				name: 'Categories',
+				component: r => require(['../components/goods/Cate.vue'],r),
+			},
+			{
 				path: '/comments',
 				name: 'Comments',
 				component: r => require(['../components/comments/Comments.vue'],r),

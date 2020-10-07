@@ -21,4 +21,7 @@
 	#app{
 		min-width: 1366px;
 	}
+	.el-card {
+		margin-top: 15px;
+	}
 </style>
