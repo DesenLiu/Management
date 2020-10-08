@@ -11,6 +11,7 @@ import './styles/iconStyle.css'
 import ZkTable from 'vue-table-with-tree-grid'
 
 
+
 axios.defaults.baseURL="http://rambuild.cn:8888/api/private/v1/"
 axios.interceptors.request.use(config => {
 	let user = JSON.parse(localStorage.getItem('user'))
@@ -47,11 +48,10 @@ axios.interceptors.request.use(config => {
 // 请求头设置
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
 
-Vue.prototype.$axios = axios
-Vue.config.productionTip = false
+Vue.prototype.$axios = axios;
+Vue.config.productionTip = false;
 
 Vue.use(ZkTable)
-
 new Vue({
   router,
   store,
