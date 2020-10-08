@@ -9,6 +9,12 @@ import axios from 'axios'
 import './styles/iconStyle.css'
 
 import ZkTable from 'vue-table-with-tree-grid'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
+
+
 
 
 
@@ -40,6 +46,8 @@ axios.interceptors.request.use(config => {
 	}
 })
 
+
+
 // axios.interceptors.response.use(config => {
 //     NProgress.done()
 //     return config
@@ -52,6 +60,21 @@ Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
 
 Vue.use(ZkTable)
+Vue.use(VueQuillEditor, /* { default global options } */)
+
+Vue.filter('dateFormat',function(originVal){
+	let dt = new Date(originVal)
+	
+	let y = dt.getFullYear();
+	let m = (dt.getMonth() + 1 + '').padStart(2,'0');
+	let d = (dt.getDate() + '').padStart(2,'0');
+	
+	let hh = (dt.getHours() + '').padStart(2,'0');
+	let mm = (dt.getMinutes() + '').padStart(2,'0');
+	let ss = (dt.getSeconds() + '').padStart(2,'0');
+	
+	return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
 new Vue({
   router,
   store,

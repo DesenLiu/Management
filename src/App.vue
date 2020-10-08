@@ -24,4 +24,10 @@
 	.el-card {
 		margin-top: 15px;
 	}
+	.el-steps{
+		margin: 15px 0;
+	}
+	.ql-editor{
+		min-height: 300px;
+	}
 </style>

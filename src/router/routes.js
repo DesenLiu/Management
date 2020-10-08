@@ -1,7 +1,7 @@
 export const routes = [{
 		path: '/home',
 		name: 'Home',
-		// redirect:'/users',
+		// redirect:'/users'goods,
 		component: r => require(['../views/Home.vue'], r),
 		children: [{
 				path: '/users',
@@ -27,6 +27,16 @@ export const routes = [{
 				path: '/params',
 				name: 'Params',
 				component: r => require(['../components/goods/Params.vue'],r),
+			},
+			{
+				path: '/goods',
+				name: 'Goods',
+				component: r => require(['../components/goods/List.vue'],r),
+			},
+			{
+				path: '/goods/add',
+				name: 'Add',
+				component: r => require(['../components/goods/Add.vue'],r),
 			},
 			{
 				path: '/comments',
