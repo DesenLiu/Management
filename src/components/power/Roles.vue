@@ -24,7 +24,7 @@
 						<el-row :class="['bdBottom' , i1 === 0 ? 'bdTop':'','vcenter']" v-for=" (item1 , i1) in scope.row.children" :key="item1.id">
 							<!-- 一级权限 -->
 							<el-col :span="5">
-								<el-tag  closable @close="removeRightsById(scope.row , item1.id)">{{item1.authName}}</el-tag>
+								<el-tag closable @close="removeRightsById(scope.row , item1.id)">{{item1.authName}}</el-tag>
 								<i class="el-icon-caret-right"></i>
 							</el-col>
 							<!-- 23权限 -->
@@ -49,7 +49,7 @@
 				<el-table-column label="操作">
 					<template slot-scope="scope">
 						<el-button size="mini" type="primary" icon="el-icon-edit" @click="editRoleClick(scope.row.id)">编辑</el-button>
-						<el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
+						<el-button size="mini" type="danger" icon="el-icon-delete" @click="removeRoleClick(scope.row.id)">删除</el-button>
 						<el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)">分配权限</el-button>
 					</template>
 				</el-table-column>
@@ -89,10 +89,11 @@
 				<el-button type="primary" @click="editRoleSuccess">确 定</el-button>
 			</span>
 		</el-dialog>
-		
+
 		<!-- 分配权限 -->
 		<el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%" @close="setRightDialogClosed">
-			<el-tree ref="treeRef" :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeysArr"></el-tree>
+			<el-tree ref="treeRef" :data="rightsList" :props="treeProps" show-checkbox node-key="id" default-expand-all
+			 :default-checked-keys="defKeysArr"></el-tree>
 			<span slot="footer">
 				<el-button @click="setRightDialogVisible = false">取 消</el-button>
 				<el-button type="primary" @click="allotRights">确 定</el-button>
@@ -128,18 +129,18 @@
 				editRoleBool: false,
 				editRole: {},
 				// 分配权限对话框
-				setRightDialogVisible:false,
+				setRightDialogVisible: false,
 				// 所有权限数据
-				rightsList:[],
+				rightsList: [],
 				// 树形控件属性绑定对象
-				treeProps:{
-					label:'authName',
-					children:'children'
+				treeProps: {
+					label: 'authName',
+					children: 'children'
 				},
 				//默认选中的节点默认值
-				defKeysArr:[],
+				defKeysArr: [],
 				// 当前即将分配权限的id
-				roleId:''
+				roleId: ''
 			}
 		},
 		created() {
@@ -193,6 +194,28 @@
 				}
 				this.editRole = res.data;
 			},
+
+			// 删除角色
+			async removeRoleClick(id) {
+				let rmResult = await this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).catch(err => err)
+				
+				if(rmResult !== 'confirm'){
+					return this.$message.info('取消了删除');
+				}
+				
+				let {data:res} = await this.$axios.delete(`roles/${id}`);
+				if(res.meta.status !== 200){
+					return this.$message.error('删除数据失败');
+				}
+				
+				
+				this.$message.success('删除角色成功');
+				this.getRoleList();
+			},
 			// 确认修改
 			editRoleSuccess() {
 				this.$refs.editRoleRef.validate(async valid => {
@@ -214,7 +237,7 @@
 				})
 			},
 			// 根据id删除对应的权限
-			async removeRightsById(role , rightId) {
+			async removeRightsById(role, rightId) {
 				console.log()
 				// 弹框提示是否删除
 				let rmRightsBool = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -222,61 +245,76 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).catch(err => err);
-				
-				if(rmRightsBool !== 'confirm'){
+
+				if (rmRightsBool !== 'confirm') {
 					return this.$message.info('取消了删除');
 				}
-				
+
 				console.log('确认了删除');
-				let {data : res} = await this.$axios.delete(`roles/${role.id}/rights/${rightId}`);
+				let {
+					data: res
+				} = await this.$axios.delete(`roles/${role.id}/rights/${rightId}`);
 				console.log(res);
-				if(res.meta.status !== 200){
+				if (res.meta.status !== 200) {
 					return this.$message.error('删除权限失败');
 				}
 				// 会导致刷新
 				// this.getRoleList();
-				
+
 				role.children = res.data
 			},
 			// 分配权限的对话框
-			async showSetRightDialog(role){
+			async showSetRightDialog(role) {
 				this.roleId = role.id;
 				// 获取全部权限数据
-				let {data : res} =await this.$axios.get('rights/tree');
+				let {
+					data: res
+				} = await this.$axios.get('rights/tree');
 				console.log(res)
-				if(res.meta.status !== 200){
+				if (res.meta.status !== 200) {
 					return this.$message.error('获取权限数据失败');
 				}
 				// 把获取到的权限存起来
 				this.rightsList = res.data;
-				this.getLeafKeys(role,this.defKeysArr)
+				this.getLeafKeys(role, this.defKeysArr)
 				this.setRightDialogVisible = true
 			},
 			// 递归获取三级权限id
-			getLeafKeys(node , arr){
-				if(!node.children){
+			getLeafKeys(node, arr) {
+				if (!node.children) {
 					return arr.push(node.id)
 				}
-				
+
 				node.children.forEach(item => {
-					this.getLeafKeys(item , arr)
+					this.getLeafKeys(item, arr)
 				})
 			},
 			// 监听分配权限关闭
-			setRightDialogClosed(){
+			setRightDialogClosed() {
 				this.defKeysArr = [];
 			},
 			// 分配权限
-			async allotRights(){
-				let keys = [...this.$refs.treeRef.getCheckedKeys(),...this.$refs.treeRef.getHalfCheckedKeys()];
+			async allotRights() {
+				let keys = [...this.$refs.treeRef.getCheckedKeys(), ...this.$refs.treeRef.getHalfCheckedKeys()];
 				let idStr = keys.join(',');
+<<<<<<< HEAD
 				let {data:res} = await this.$axios.post(`roles/${this.roleId}/rights`,{rids:idStr});
 				if(res.meta.status !== 200){
 					return this.$message.error('分配权限失败');		
+=======
+				let {
+					data: res
+				} = await this.$axios.post(`roles/${this.roleId}/rights`, {
+					rids: idStr
+				});
+				if (res.meta.status !== 200) {
+					return this.$message.error('分配权限失败');
+
+>>>>>>> rights
 				}
-				 this.$message.success('分配权限成功');
-				 this.getRoleList();
-				 this.setRightDialogVisible = false;
+				this.$message.success('分配权限成功');
+				this.getRoleList();
+				this.setRightDialogVisible = false;
 			}
 		}
 	}
