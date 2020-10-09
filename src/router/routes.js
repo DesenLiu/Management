@@ -44,6 +44,11 @@ export const routes = [{
 				component: r => require(['../components/order/Order.vue'],r),
 			},
 			{
+				path: '/reports',
+				name: 'Report',
+				component: r => require(['../components/report/Report.vue'],r),
+			},
+			{
 				path: '/comments',
 				name: 'Comments',
 				component: r => require(['../components/comments/Comments.vue'],r),
